@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Url {
+  id            String   @id @default(cuid())
+  shortCode     String   @unique @db.VarChar(6)
+  originalUrl   String   @db.Text
+  customAlias   String?  @unique @db.VarChar(20)
+  clicks        Int      @default(0)
+  title         String?  @db.VarChar(255)
+  description   String?  @db.Text
+  userAgent     String?  @db.VarChar(500)
+  referer       String?  @db.VarChar(500)
+  metadata      Json?    @default("{}")
+  createdAt     DateTime @default(now()) @db.Timestamp(3)
+  expiresAt     DateTime? @db.Timestamp(3)
+  updatedAt     DateTime @updatedAt @db.Timestamp(3)
+
+  // Indexes for performance
+  @@index([shortCode])
+  @@index([customAlias])
+  @@index([expiresAt])
+  @@index([createdAt])
+  @@map("urls")
+}
+
+model UrlAnalytics {
+  id            String   @id @default(cuid())
+  urlId         String
+  referer       String?  @db.Text
+  userAgent     String?  @db.Text
+  ipAddress     String?  @db.VarChar(45)
+  country       String?  @db.VarChar(100)
+  city          String?  @db.VarChar(100)
+  device        String?  @db.VarChar(50)
+  browser       String?  @db.VarChar(50)
+  os            String?  @db.VarChar(50)
+  createdAt     DateTime @default(now()) @db.Timestamp(3)
+
+  @@index([urlId])
+  @@index([createdAt])
+  @@map("url_analytics")
+}

@@ -1,5 +1,9 @@
-import { Router } from "express";
-import { urlValidationRules, validate } from "../utils/validation";
+﻿import { Router } from "express";
+import {
+  urlValidationRules,
+  updateUrlValidationRules,
+  validate,
+} from "../utils/validation";
 import * as urlController from "../controllers/urlController";
 import { rateLimiter } from "../middleware/rateLimiter";
 
@@ -14,7 +18,7 @@ router.post(
   urlController.createShortUrl
 );
 
-// Get stats
+// Get overall stats
 router.get("/stats/overview", urlController.getStats);
 
 // Get all URLs
@@ -23,10 +27,13 @@ router.get("/", urlController.getAllUrls);
 // Get URL stats
 router.get("/:shortCode/stats", urlController.getUrlStats);
 
+// Record click
+router.post("/:shortCode/click", urlController.recordClick);
+
 // Update custom alias
 router.put(
   "/:shortCode",
-  urlValidationRules(),
+  updateUrlValidationRules(),
   validate,
   urlController.updateUrl
 );
@@ -34,7 +41,7 @@ router.put(
 // Delete URL
 router.delete("/:shortCode", urlController.deleteUrl);
 
-// Redirect to original URL (should be last)
+// Redirect to original URL
 router.get("/:shortCode", urlController.redirectUrl);
 
 export default router;

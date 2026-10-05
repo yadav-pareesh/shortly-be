@@ -1,4 +1,4 @@
-import express from "express";
+﻿import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
@@ -13,8 +13,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(helmet());
+// Security & Parsing Middleware
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ limit: "10kb", extended: true }));
@@ -27,11 +27,13 @@ app.use((req, _res, next) => {
 
 // Health check
 app.get("/health", (_req, res) => {
-  res.json({ success: true, message: "Server is running" });
+  res.json({ success: true, message: "Server is running", timestamp: new Date().toISOString() });
 });
 
-// Routes
+// API Routes
 app.use("/api/urls", urlRoutes);
+
+// Direct short link redirect: GET /:shortCode
 app.get("/:shortCode", redirectUrl);
 
 // 404 handler
@@ -43,31 +45,29 @@ app.use((_req, res) => {
   });
 });
 
-// Error middleware
+// Centralized error middleware
 app.use(errorMiddleware);
 
 // Start server
 const server = app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
+  console.log(`[Shortly API] Server running on http://localhost:${PORT}`);
+  console.log(`[Shortly API] Environment: ${process.env.NODE_ENV || "development"}`);
 });
 
 // Graceful shutdown
-process.on("SIGTERM", async () => {
-  console.log("SIGTERM received, shutting down gracefully");
+const shutdown = async () => {
+  console.log("[Shortly API] Shutting down gracefully...");
   server.close(async () => {
-    await prisma.$disconnect();
-    console.log("Database connection closed");
+    try {
+      await prisma.$disconnect();
+    } catch {}
+    console.log("[Shortly API] Server closed.");
     process.exit(0);
   });
-});
+};
 
-// Handle uncaught exceptions
-process.on("SIGINT", async () => {
-  console.log("SIGINT received, shutting down gracefully");
-  await prisma.$disconnect();
-  process.exit(0);
-});
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);
 
 // Cleanup expired URLs every hour
 setInterval(async () => {
@@ -75,9 +75,9 @@ setInterval(async () => {
     const { urlService } = await import("./services/urlService");
     const deleted = await urlService.cleanupExpiredUrls();
     if (deleted > 0) {
-      console.log(`🗑️  Cleaned up ${deleted} expired URLs`);
+      console.log(`[Shortly API] Cleaned up ${deleted} expired URLs`);
     }
   } catch (error) {
-    console.error("Error cleaning up expired URLs:", error);
+    console.error("[Shortly API] Error cleaning up expired URLs:", error);
   }
 }, 60 * 60 * 1000);

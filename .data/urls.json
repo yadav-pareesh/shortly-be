@@ -1,0 +1,42 @@
+[
+  {
+    "id": "local-1791241486436-axnq",
+    "originalUrl": "https://github.com/yadav-pareesh/pareesh-portfolio",
+    "shortCode": "Yh3J8R",
+    "customAlias": "github",
+    "clicks": 1,
+    "createdAt": "2026-10-05T23:04:46.436Z",
+    "expiresAt": "2026-11-04T23:04:00.000Z",
+    "updatedAt": "2026-10-05T23:05:27.167Z"
+  },
+  {
+    "id": "local-1791175474039-xd4v",
+    "originalUrl": "https://vercel.com/yadavpareeshs-projects/whatsapp-qr/8R7a4dkemgKtXDW4Nk1qpaMFvmAg",
+    "shortCode": "veEOOK",
+    "customAlias": null,
+    "clicks": 2,
+    "createdAt": "2026-10-05T04:44:34.040Z",
+    "expiresAt": null,
+    "updatedAt": "2026-10-05T23:02:57.329Z"
+  },
+  {
+    "id": "seed-1",
+    "shortCode": "docs",
+    "originalUrl": "https://expressjs.com/en/starter/installing.html",
+    "customAlias": "docs",
+    "clicks": 42,
+    "createdAt": "2026-10-04T04:14:32.658Z",
+    "expiresAt": null,
+    "updatedAt": "2026-10-05T04:14:32.658Z"
+  },
+  {
+    "id": "seed-2",
+    "shortCode": "prismaguide",
+    "originalUrl": "https://www.prisma.io/docs",
+    "customAlias": "prismaguide",
+    "clicks": 18,
+    "createdAt": "2026-10-04T16:14:32.658Z",
+    "expiresAt": "2026-11-04T04:14:32.658Z",
+    "updatedAt": "2026-10-05T04:14:32.658Z"
+  }
+]
